@@ -1,45 +1,53 @@
-# projeto-testes-automatizados
-def test_soma_simples():
-    assert 2 + 2 == 4
+describe('Login Hub de Leitura', () => {
 
-def test_string():
-    assert "qa".upper() == "QA"
-# Projeto de Testes Automatizados
+    beforeEach(() => {
+        cy.visit('http://localhost:3000')
+    })
 
-Projeto simples de testes automatizados utilizando Python e Pytest.
+    it('Deve realizar login com sucesso', () => {
 
-## Como executar os testes localmente
-1. Instalar Python 3
-2. Instalar dependências:
-   pip install -r requirements.txt
-3. Executar os testes:
-   pytest
-__pycache__/
-.pytest_cache/
-venv/
-pipeline {
+        cy.get('#email')
+            .type('teste@teste.com')
+
+        cy.get('#password')
+            .type('123456')
+
+        cy.get('button')
+            .click()
+
+        cy.contains('Login realizado com sucesso')
+    })
+}){
+  "name": "jenkins-automation-project",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "cypress run",
+    "cypress:open": "cypress open"
+  },
+  "devDependencies": {
+    "cypress": "^13.0.0"
+  }
+}pipeline {
+
     agent any
 
     stages {
 
-        stage('Preparação do ambiente') {
+        stage('Preparar Ambiente') {
             steps {
-                echo 'Iniciando pipeline'
-                checkout scm
+                echo 'Preparando ambiente...'
             }
         }
 
-        stage('Instalação das dependências') {
+        stage('Instalar Dependências') {
             steps {
-                echo 'Instalando dependências'
-                sh 'pip install -r requirements.txt'
+                bat 'npm install'
             }
         }
 
-        stage('Execução de testes automatizados') {
+        stage('Executar Testes') {
             steps {
-                echo 'Executando testes automatizados'
-                sh 'pytest --junitxml=report.xml'
+                bat 'npx cypress run'
             }
         }
     }
@@ -48,7 +56,14 @@ pipeline {
         always {
             echo 'Pipeline finalizado'
         }
-    }
-}
 
-Devido às limitações do ambiente local (tablet), o Jenkins não foi instalado localmente. O pipeline foi configurado via Jenkinsfile e versionado no repositório GitHub, seguindo as boas práticas de CI/CD, permitindo execução em qualquer ambiente Jenkins compatível.
+        success {
+            echo 'Testes executados com sucesso'
+        }
+
+        failure {
+            echo 'Falha na execução dos testes'
+        }
+    }# Projeto Jenkins + Cypress
+
+3. Execução dos testes automatizados}
